@@ -25,5 +25,10 @@ namespace demoBanHang.Repositories
             }
             return false;
         }
+
+        public int GetUserID(string username)
+        { 
+            return _context.TaiKhoans.FirstOrDefault(x => x.Username.Equals(username)).Id;
+        }
     }
 }

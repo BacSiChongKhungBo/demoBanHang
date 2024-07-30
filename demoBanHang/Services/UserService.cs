@@ -27,5 +27,10 @@ namespace demoBanHang.Services
 			}
 			return "Sai Tài Khoản hoặc mật Khẩu";
 		}
+
+		public int GetId(string username) 
+		{ 
+			return _repos.GetUserID(username);
+		}
 	}
 }
