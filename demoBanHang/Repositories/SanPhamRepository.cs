@@ -46,6 +46,19 @@ namespace demoBanHang.Repositories
         { 
             return _context.Ctsps.ToList();
         }
+
+        public bool AddCTSPToDB(Ctsp ctsp)
+        {
+            if (ctsp != null)
+            {
+                _context.Ctsps.Add(ctsp);
+                _context.SaveChanges();// ko có thì ko lưu dũ liệu vào db
+                return true;
+            }
+            return false;
+        }
+
+
         public List<Hang> GetAllHang() 
         { 
             return _context.Hangs.ToList();

@@ -27,5 +27,22 @@ namespace demoBanHang.Services
             }
             return "Thêm Thất Bại";
         }
+
+        public string UpdateHD(Hoadon hd)
+        {
+            if (_repos.UpdateHoaDon(hd))
+            {
+                return "Thêm Thành Công";
+            }
+            return "Thêm Thất Bại";
+        }
+        public string RemoveHD(Hoadon hd)
+        {
+            if (_repos.RemoveHoaDon(hd))
+            {
+                return "Thêm Thành Công";
+            }
+            return "Thêm Thất Bại";
+        }
     }
 }

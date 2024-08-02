@@ -29,20 +29,18 @@
         private void InitializeComponent()
         {
             groupBox1 = new GroupBox();
-            label2 = new Label();
-            label1 = new Label();
-            btn_AddSPToHD = new Button();
             dtgView_SP = new DataGridView();
+            btn_AddSPToHD = new Button();
             groupBox2 = new GroupBox();
+            dtgView_HD = new DataGridView();
             btnCapNhatHD = new Button();
             btnTaoHD = new Button();
-            dtgView_CTHD = new DataGridView();
             groupBox3 = new GroupBox();
             button5 = new Button();
             button4 = new Button();
-            textBox7 = new TextBox();
+            txt_tienThua = new TextBox();
             label9 = new Label();
-            textBox6 = new TextBox();
+            txt_TienNhan = new TextBox();
             label8 = new Label();
             txtThanhTien = new TextBox();
             label7 = new Label();
@@ -54,47 +52,40 @@
             label4 = new Label();
             txt_user = new TextBox();
             label3 = new Label();
+            groupBox4 = new GroupBox();
+            dtgView_HDCT = new DataGridView();
+            button1 = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dtgView_SP).BeginInit();
             groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dtgView_CTHD).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dtgView_HD).BeginInit();
             groupBox3.SuspendLayout();
+            groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dtgView_HDCT).BeginInit();
             SuspendLayout();
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(label2);
-            groupBox1.Controls.Add(label1);
-            groupBox1.Controls.Add(btn_AddSPToHD);
             groupBox1.Controls.Add(dtgView_SP);
             groupBox1.Location = new Point(12, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(930, 384);
+            groupBox1.Size = new Size(930, 333);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "San Pham";
             // 
-            // label2
+            // dtgView_SP
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(281, 340);
-            label2.Name = "label2";
-            label2.Size = new Size(49, 15);
-            label2.TabIndex = 3;
-            label2.Text = "Giá Tiền";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(6, 340);
-            label1.Name = "label1";
-            label1.Size = new Size(81, 15);
-            label1.TabIndex = 2;
-            label1.Text = "Tên Sản Phẩm";
+            dtgView_SP.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtgView_SP.Location = new Point(6, 22);
+            dtgView_SP.Name = "dtgView_SP";
+            dtgView_SP.Size = new Size(924, 289);
+            dtgView_SP.TabIndex = 0;
+            dtgView_SP.CellClick += dtgView_SP_CellClick;
             // 
             // btn_AddSPToHD
             // 
-            btn_AddSPToHD.Location = new Point(680, 317);
+            btn_AddSPToHD.Location = new Point(1052, 34);
             btn_AddSPToHD.Name = "btn_AddSPToHD";
             btn_AddSPToHD.Size = new Size(244, 61);
             btn_AddSPToHD.TabIndex = 1;
@@ -102,39 +93,38 @@
             btn_AddSPToHD.UseVisualStyleBackColor = true;
             btn_AddSPToHD.Click += btn_AddSPToHD_Click;
             // 
-            // dtgView_SP
-            // 
-            dtgView_SP.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtgView_SP.Location = new Point(6, 22);
-            dtgView_SP.Name = "dtgView_SP";
-            dtgView_SP.Size = new Size(918, 289);
-            dtgView_SP.TabIndex = 0;
-            dtgView_SP.CellClick += dtgView_SP_CellClick;
-            // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(btnCapNhatHD);
-            groupBox2.Controls.Add(btnTaoHD);
-            groupBox2.Controls.Add(dtgView_CTHD);
-            groupBox2.Location = new Point(12, 402);
+            groupBox2.Controls.Add(dtgView_HD);
+            groupBox2.Location = new Point(18, 351);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(930, 362);
+            groupBox2.Size = new Size(930, 287);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "Hóa Đơn";
             // 
+            // dtgView_HD
+            // 
+            dtgView_HD.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtgView_HD.Location = new Point(12, 22);
+            dtgView_HD.Name = "dtgView_HD";
+            dtgView_HD.Size = new Size(918, 242);
+            dtgView_HD.TabIndex = 4;
+            dtgView_HD.CellClick += dtgView_HD_CellClick;
+            // 
             // btnCapNhatHD
             // 
-            btnCapNhatHD.Location = new Point(269, 34);
+            btnCapNhatHD.Location = new Point(1052, 412);
             btnCapNhatHD.Name = "btnCapNhatHD";
             btnCapNhatHD.Size = new Size(244, 61);
             btnCapNhatHD.TabIndex = 5;
             btnCapNhatHD.Text = "Xóa Hóa Đơn";
             btnCapNhatHD.UseVisualStyleBackColor = true;
+            btnCapNhatHD.Click += btnCapNhatHD_Click;
             // 
             // btnTaoHD
             // 
-            btnTaoHD.Location = new Point(6, 34);
+            btnTaoHD.Location = new Point(1052, 345);
             btnTaoHD.Name = "btnTaoHD";
             btnTaoHD.Size = new Size(244, 61);
             btnTaoHD.TabIndex = 4;
@@ -142,21 +132,13 @@
             btnTaoHD.UseVisualStyleBackColor = true;
             btnTaoHD.Click += btnTaoHD_Click;
             // 
-            // dtgView_CTHD
-            // 
-            dtgView_CTHD.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dtgView_CTHD.Location = new Point(6, 114);
-            dtgView_CTHD.Name = "dtgView_CTHD";
-            dtgView_CTHD.Size = new Size(918, 242);
-            dtgView_CTHD.TabIndex = 4;
-            // 
             // groupBox3
             // 
             groupBox3.Controls.Add(button5);
             groupBox3.Controls.Add(button4);
-            groupBox3.Controls.Add(textBox7);
+            groupBox3.Controls.Add(txt_tienThua);
             groupBox3.Controls.Add(label9);
-            groupBox3.Controls.Add(textBox6);
+            groupBox3.Controls.Add(txt_TienNhan);
             groupBox3.Controls.Add(label8);
             groupBox3.Controls.Add(txtThanhTien);
             groupBox3.Controls.Add(label7);
@@ -168,7 +150,7 @@
             groupBox3.Controls.Add(label4);
             groupBox3.Controls.Add(txt_user);
             groupBox3.Controls.Add(label3);
-            groupBox3.Location = new Point(948, 12);
+            groupBox3.Location = new Point(1319, 12);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new Size(414, 752);
             groupBox3.TabIndex = 2;
@@ -193,12 +175,13 @@
             button4.Text = "Thanh Toán";
             button4.UseVisualStyleBackColor = true;
             // 
-            // textBox7
+            // txt_tienThua
             // 
-            textBox7.Location = new Point(96, 293);
-            textBox7.Name = "textBox7";
-            textBox7.Size = new Size(246, 23);
-            textBox7.TabIndex = 13;
+            txt_tienThua.Enabled = false;
+            txt_tienThua.Location = new Point(96, 293);
+            txt_tienThua.Name = "txt_tienThua";
+            txt_tienThua.Size = new Size(246, 23);
+            txt_tienThua.TabIndex = 13;
             // 
             // label9
             // 
@@ -209,12 +192,13 @@
             label9.TabIndex = 12;
             label9.Text = "Tiền Thừa";
             // 
-            // textBox6
+            // txt_TienNhan
             // 
-            textBox6.Location = new Point(110, 253);
-            textBox6.Name = "textBox6";
-            textBox6.Size = new Size(246, 23);
-            textBox6.TabIndex = 11;
+            txt_TienNhan.Location = new Point(110, 253);
+            txt_TienNhan.Name = "txt_TienNhan";
+            txt_TienNhan.Size = new Size(246, 23);
+            txt_TienNhan.TabIndex = 11;
+            txt_TienNhan.TextChanged += txt_TienNhan_TextChanged;
             // 
             // label8
             // 
@@ -305,23 +289,58 @@
             label3.TabIndex = 0;
             label3.Text = "Nhân Viên";
             // 
+            // groupBox4
+            // 
+            groupBox4.Controls.Add(dtgView_HDCT);
+            groupBox4.Location = new Point(18, 644);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new Size(930, 302);
+            groupBox4.TabIndex = 6;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Hoa Don Chi Tiet";
+            // 
+            // dtgView_HDCT
+            // 
+            dtgView_HDCT.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtgView_HDCT.Location = new Point(12, 22);
+            dtgView_HDCT.Name = "dtgView_HDCT";
+            dtgView_HDCT.Size = new Size(912, 274);
+            dtgView_HDCT.TabIndex = 0;
+            dtgView_HDCT.CellClick += dtgView_HDCT_CellClick;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(1052, 668);
+            button1.Name = "button1";
+            button1.Size = new Size(234, 69);
+            button1.TabIndex = 7;
+            button1.Text = "Xoa";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // BanHang
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1374, 776);
+            ClientSize = new Size(1745, 958);
+            Controls.Add(button1);
+            Controls.Add(groupBox4);
+            Controls.Add(btnTaoHD);
+            Controls.Add(btnCapNhatHD);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);
+            Controls.Add(btn_AddSPToHD);
             Controls.Add(groupBox1);
             Name = "BanHang";
             Text = "BanHang";
             groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dtgView_SP).EndInit();
             groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dtgView_CTHD).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dtgView_HD).EndInit();
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
+            groupBox4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dtgView_HDCT).EndInit();
             ResumeLayout(false);
         }
 
@@ -329,13 +348,11 @@
 
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private Label label2;
-        private Label label1;
         private Button btn_AddSPToHD;
         private DataGridView dtgView_SP;
         private Button btnCapNhatHD;
         private Button btnTaoHD;
-        private DataGridView dtgView_CTHD;
+        private DataGridView dtgView_HD;
         private GroupBox groupBox3;
         private TextBox textBox3;
         private TextBox textBox2;
@@ -345,13 +362,16 @@
         private Label label3;
         private Button button5;
         private Button button4;
-        private TextBox textBox7;
+        private TextBox txt_tienThua;
         private Label label9;
-        private TextBox textBox6;
+        private TextBox txt_TienNhan;
         private Label label8;
         private TextBox txtThanhTien;
         private Label label7;
         private TextBox txtMaHD;
         private Label label6;
+        private GroupBox groupBox4;
+        private DataGridView dtgView_HDCT;
+        private Button button1;
     }
 }

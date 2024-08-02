@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,6 +22,8 @@ namespace demoBanHang
         HDCTService _hDCTService = new HDCTService();
         int _IdSPWhenClick;
         string info_user;
+        int _IdHoaDonWhenClick;
+        int _IdHDCTWhenClick;
         public BanHang(string user)
         {
             InitializeComponent();
@@ -30,6 +33,7 @@ namespace demoBanHang
             txtThanhTien.Enabled = false;
             info_user = user;
             LoadDataSP();
+            LoadAllHD();
         }
 
         public void LoadDataSP()
@@ -110,23 +114,41 @@ namespace demoBanHang
             int idHD = _hService.GetAllHoaDon().First(x => x.IdNv == hd.IdNv && x.NgayTao == hd.NgayTao).Id;
             txtMaHD.Text = idHD.ToString();
         }
+        public void LoadAllHD()
+        {
+            int stt = 1;
+            //Xác định số lượng côt = số lượng thuộc tính đối tượng + stt
+            dtgView_HD.ColumnCount = 6;
+            //Đặt tên cột66
+            dtgView_HD.Columns[0].Name = "STT";
+            dtgView_HD.Columns[1].Name = "ID Hóa Đơn";
+            dtgView_HD.Columns[2].Name = "ID NV";
+            dtgView_HD.Columns[3].Name = "Ngay Tao";
+            dtgView_HD.Columns[4].Name = "Thanh Tien";
+            dtgView_HD.Columns[5].Name = "TrangThai";
+            dtgView_HD.Rows.Clear();
+            foreach (var hd in _hService.GetAllHoaDon())
+            {
+                dtgView_HD.Rows.Add(stt++, hd.Id, hd.IdNv, hd.NgayTao, hd.ThanhTien == null ? 0 + " VND" : hd.ThanhTien + " VND", hd.Trangthai);
+            }
+        }
         public void LoadDataCTHD()
         {
             //Tạo Bảng HDCT
             int stt = 1;
             //Xác định số lượng côt = số lượng thuộc tính đối tượng + stt
-            dtgView_CTHD.ColumnCount = 9;
+            dtgView_HDCT.ColumnCount = 9;
             //Đặt tên cột
-            dtgView_CTHD.Columns[0].Name = "STT";
-            dtgView_CTHD.Columns[1].Name = "ID Hóa Đơn";
-            dtgView_CTHD.Columns[2].Name = "ID CTHD";
-            dtgView_CTHD.Columns[3].Name = "Tên SP";
-            dtgView_CTHD.Columns[4].Name = "Giá";
-            dtgView_CTHD.Columns[5].Name = "Hãng";
-            dtgView_CTHD.Columns[6].Name = "Thể Tích";
-            dtgView_CTHD.Columns[7].Name = "Số lượng";
-            dtgView_CTHD.Columns[8].Name = "Thành Tiền";
-            dtgView_CTHD.Rows.Clear();
+            dtgView_HDCT.Columns[0].Name = "STT";
+            dtgView_HDCT.Columns[1].Name = "ID Hóa Đơn";
+            dtgView_HDCT.Columns[2].Name = "ID CTHD";
+            dtgView_HDCT.Columns[3].Name = "Tên SP";
+            dtgView_HDCT.Columns[4].Name = "Giá";
+            dtgView_HDCT.Columns[5].Name = "Hãng";
+            dtgView_HDCT.Columns[6].Name = "Thể Tích";
+            dtgView_HDCT.Columns[7].Name = "Số lượng";
+            dtgView_HDCT.Columns[8].Name = "Thành Tiền";
+            dtgView_HDCT.Rows.Clear();
             //ID Hóa đơn, IDCTSP, ID SP, ID Hang, ID TheTich, soluong, Giá
             var lstHang = _sService.GetHang();
             var lstTheTich = _sService.GetTheTich();
@@ -137,37 +159,94 @@ namespace demoBanHang
             decimal? thanhtien = 0;
             var query1 = from hdct in lstHDCT
                          join hd in lstHD on hdct.IdHd equals hd.Id
-                         join ctsp in lstCTSP on hdct.IdCtsp equals ctsp.Id
-                         select new { IdHDCT = hdct.Id, IdHD = hd.Id, IdSP = ctsp.IdSp, IdHang = ctsp.IdHang, IdTT = ctsp.IdTheTich, sl = hdct.Soluong };
-            var query2 = from q1 in query1
-                         join spham in lstSP on q1.IdSP equals spham.Id
-                         join hang in lstHang on q1.IdHang equals hang.Id
-                         join tt in lstTheTich on q1.IdTT equals tt.Id
-                         select new { IdHDCT = q1.IdHDCT, IdHD = q1.IdHD, IdSP = q1.IdSP, TenSP = spham.TenSp, gia = spham.Gia, IdHang = q1.IdHang, TenHang = hang.TenHang, IdTT = q1.IdTT, tenTT = tt.Thetich1, sl = q1.sl };
-            dtgView_CTHD.Rows.Clear();
-            foreach (var item in query2)
+                         select new { IdHDCT = hdct.Id, IdHD = hd.Id, IdNV = hd.IdNv, ThanhTienHD = hd.ThanhTien, IdCTSP = hdct.IdCtsp, Soluong = hdct.Soluong };
+            var query2 = from sp in lstSP
+                         join ctsp in lstCTSP on sp.Id equals ctsp.IdSp
+                         join h in lstHang on ctsp.IdHang equals h.Id
+                         join tt in lstTheTich on ctsp.IdTheTich equals tt.Id
+                         select new
+                         {
+                             IdSP = sp.Id,
+                             TenSP = sp.TenSp,
+                             DonGia = sp.Gia,
+                             TrangThaiSP = sp.TrangThai,
+                             IdCTSP = ctsp.Id,
+                             IdHang = h.Id,
+                             TenHang = h.TenHang,
+                             IdTT = tt.Id,
+                             TenTT = tt.Thetich1
+                         };
+            var data = from q1 in query1
+                       join q2 in query2 on q1.IdCTSP equals q2.IdCTSP
+                       select new
+                       {
+                           IdHDCT = q1.IdHDCT,
+                           IdHD = q1.IdHD,
+                           IdNV = q1.IdNV,
+                           ThanhTienHD = q1.ThanhTienHD,
+                           IdCTSP = q1.IdCTSP,
+                           Soluong = q1.Soluong,
+                           IdSP = q2.IdSP,
+                           TenSP = q2.TenSP,
+                           DonGia = q2.DonGia,
+                           TrangThaiSP = q2.TrangThaiSP,
+                           IdHang = q2.IdHang,
+                           TenHang = q2.TenHang,
+                           IdTT = q2.IdTT,
+                           TenTT = q2.TenTT,
+                           SoLuong = q1.Soluong
+                       };
+
+            dtgView_HDCT.Rows.Clear();
+            foreach (var item in data)
             {
-                dtgView_CTHD.Rows.Add(stt++, item.IdHD, item.IdHDCT, item.TenSP, item.gia, item.TenHang, item.tenTT, item.sl, item.sl * item.gia);
-                thanhtien += (item.sl * item.gia);
+                dtgView_HDCT.Rows.Add(stt++, item.IdHD, item.IdHDCT, item.TenSP, item.DonGia, item.TenHang, item.TenTT, item.SoLuong, item.SoLuong * item.DonGia);
+                thanhtien += (item.SoLuong * item.DonGia);
             }
             txtThanhTien.Text = thanhtien.ToString();
         }
         private void btnTaoHD_Click(object sender, EventArgs e)
         {
             GetThongTin();
-            LoadDataCTHD();
+            LoadAllHD();
         }
 
         private void btn_AddSPToHD_Click(object sender, EventArgs e)
         {
             var ctsp = _sService.GetCtsp().FirstOrDefault(x => x.Id == _IdSPWhenClick);
-            var hd = _hService.GetAllHoaDon().FirstOrDefault(x => x.Id.ToString() == txtMaHD.Text);
+            var hd = _hService.GetAllHoaDon().FirstOrDefault(x => x.Id == _IdHoaDonWhenClick);
             Cthd cthd = new Cthd();
             cthd.IdCtsp = ctsp.Id;
             cthd.IdHd = hd.Id;
             _hDCTService.Add(cthd);
+            UpdateThanhTien();
             LoadDataCTHD();
+            LoadAllHD();
+        }
 
+        private void UpdateThanhTien()
+        {
+            var lstCTSP = _sService.GetCtsp();
+            var lstSP = _sService.GetSanPhams();
+            var lstHD = _hService.GetAllHoaDon().Where(x => x.Id == _IdHoaDonWhenClick);
+            var lstHDCT = _hDCTService.GetAll().Where(x => x.IdHd == _IdHoaDonWhenClick);
+            var query1 = from hdct in lstHDCT
+                         join hd in lstHD on hdct.IdHd equals hd.Id
+                         select new { IdHDCT = hdct.Id, IdHD = hd.Id, IdNV = hd.IdNv, ThanhTienHD = hd.ThanhTien, IdCTSP = hdct.IdCtsp, Soluong = hdct.Soluong };
+            var query2 = from sp in lstSP
+                         join ctsp in lstCTSP on sp.Id equals ctsp.IdSp
+                         select new { IdSP = sp.Id, IdCTSP = ctsp.Id, DonGia = sp.Gia };
+            var data = from q1 in query1
+                       join q2 in query2 on q1.IdCTSP equals q2.IdCTSP
+                       select new { IdHDCT = q1.IdHDCT, IdHD = q1.IdHDCT, IdNV = q1.IdHDCT, ThanhTienHD = q1.IdHDCT, IdCTSP = q1.IdHDCT, Soluong = q1.Soluong, DonGia = q2.DonGia };
+            decimal? TienHD = 0;
+            foreach (var item in data)
+            {
+                TienHD += item.Soluong * item.DonGia;
+            }
+            var UpdatedHD = _hService.GetAllHoaDon().First(x => x.Id == _IdHoaDonWhenClick);
+            UpdatedHD.ThanhTien = TienHD;
+            _hService.UpdateHD(UpdatedHD);
         }
 
         private void dtgView_SP_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -181,6 +260,74 @@ namespace demoBanHang
             //ko trích xuất ID từ những dòng ko liên quan
             //Trích xuất cột chứa ID
             _IdSPWhenClick = int.Parse(dtgView_SP.Rows[selectedRow].Cells[1].Value.ToString());
+        }
+
+        private void dtgView_HD_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //lấy được xem mình ấn vào dòng nào
+            int selectedRow = e.RowIndex;
+            if (selectedRow < 0 || selectedRow >= _sService.GetSanPhams().Count)
+            {
+                return;
+            }
+            //ko trích xuất ID từ những dòng ko liên quan
+            //Trích xuất cột chứa ID
+            _IdHoaDonWhenClick = int.Parse(dtgView_HD.Rows[selectedRow].Cells[1].Value.ToString());
+            txtMaHD.Text = _IdHoaDonWhenClick.ToString();
+            txtThanhTien.Text = _hService.GetAllHoaDon().FirstOrDefault(x => x.Id == _IdHoaDonWhenClick).ThanhTien.ToString();
+            LoadDataCTHD();
+        }
+
+        private void btnCapNhatHD_Click(object sender, EventArgs e)
+        {
+            //Hoa don co 2 trang thai: Chua TT && da thanh toan => dung cach phia duoi
+            var removeCTHD = _hDCTService.GetAll().Where(x => x.IdHd == _IdHoaDonWhenClick).ToList();
+            foreach (var x in removeCTHD)
+            {
+                _hDCTService.Remove(x);
+            }
+            var removedHD = _hService.GetAllHoaDon().First(x => x.Id == _IdHoaDonWhenClick);
+            MessageBox.Show(_hService.RemoveHD(removedHD));
+            LoadAllHD();
+            LoadDataCTHD();
+
+            //Voi Du an co nhieu trang thai hon, VD: chua thanh toan, da thanh toan, da huy => dung int va update trang thai
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var removedHDCT = _hDCTService.GetAll().FirstOrDefault(x => x.Id == _IdHDCTWhenClick);
+            _hDCTService.Remove(removedHDCT);
+            UpdateThanhTien();
+            LoadAllHD();
+            LoadDataCTHD();
+        }
+
+        private void dtgView_HDCT_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //lấy được xem mình ấn vào dòng nào
+            int selectedRow = e.RowIndex;
+            if (selectedRow < 0 || selectedRow >= _sService.GetSanPhams().Count)
+            {
+                return;
+            }
+            //ko trích xuất ID từ những dòng ko liên quan
+            //Trích xuất cột chứa ID
+            _IdHDCTWhenClick = int.Parse(dtgView_HDCT.Rows[selectedRow].Cells[2].Value.ToString());
+        }
+
+        private void txt_TienNhan_TextChanged(object sender, EventArgs e)
+        {
+            Regex regex = new Regex(@"^\d$");
+            //Tien Nhap vao ko dc la chu so
+            if (Regex.IsMatch(txt_TienNhan.Text, "^(0|[1-9][0-9]*)$"))
+            {
+                txt_tienThua.Text = (decimal.Parse(txt_TienNhan.Text) - decimal.Parse(txtThanhTien.Text)).ToString(); 
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }

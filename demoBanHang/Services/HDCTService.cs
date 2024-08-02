@@ -37,6 +37,14 @@ namespace demoBanHang.Services
             }
             
         }
+        public void Remove(Cthd cthd)
+        {
+            //2 TH: đã có trong cthd
+            if (cthd != null)
+            {
+                _repos.RemoveCTHD(cthd);
+            }
+        }
 
     }
 }

@@ -40,6 +40,14 @@ namespace demoBanHang.Services
         { 
             return _repos.GetAllCtsp();
         }
+        public string ThemCTSP(Ctsp ctsp)
+        {
+            if (_repos.AddCTSPToDB(ctsp))
+            {
+                return "Thêm Thành Công";
+            }
+            return "Thêm Thất Bại";
+        }
         public List<Hang> GetHang()
         {
             return _repos.GetAllHang();

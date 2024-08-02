@@ -41,5 +41,15 @@ namespace demoBanHang.Repositories
             }
             return false;
         }
+        public bool RemoveCTHD(Cthd cthd)
+        {
+            if (cthd != null)
+            {
+                _context.Cthds.Remove(cthd);
+                _context.SaveChanges();// ko có thì ko lưu dũ liệu vào db
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -31,5 +31,25 @@ namespace demoBanHang.Repositories
             }
             return false;
         }
+        public bool UpdateHoaDon(Hoadon hd)
+        {
+            if (hd != null)
+            {
+                _context.Hoadons.Update(hd);
+                _context.SaveChanges();// ko có thì ko lưu dũ liệu vào db
+                return true;
+            }
+            return false;
+        }
+        public bool RemoveHoaDon(Hoadon hd)
+        {
+            if (hd != null)
+            {
+                _context.Hoadons.Remove(hd);
+                _context.SaveChanges();// ko có thì ko lưu dũ liệu vào db
+                return true;
+            }
+            return false;
+        }
     }
 }
