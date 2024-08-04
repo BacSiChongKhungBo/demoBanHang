@@ -36,8 +36,8 @@
             btnCapNhatHD = new Button();
             btnTaoHD = new Button();
             groupBox3 = new GroupBox();
-            button5 = new Button();
-            button4 = new Button();
+            btnXuatHD = new Button();
+            btnThanhToan = new Button();
             txt_tienThua = new TextBox();
             label9 = new Label();
             txt_TienNhan = new TextBox();
@@ -134,8 +134,8 @@
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(button5);
-            groupBox3.Controls.Add(button4);
+            groupBox3.Controls.Add(btnXuatHD);
+            groupBox3.Controls.Add(btnThanhToan);
             groupBox3.Controls.Add(txt_tienThua);
             groupBox3.Controls.Add(label9);
             groupBox3.Controls.Add(txt_TienNhan);
@@ -157,23 +157,25 @@
             groupBox3.TabStop = false;
             groupBox3.Text = "Thanh Toán";
             // 
-            // button5
+            // btnXuatHD
             // 
-            button5.Location = new Point(15, 685);
-            button5.Name = "button5";
-            button5.Size = new Size(393, 61);
-            button5.TabIndex = 14;
-            button5.Text = "Xuất Hóa Đơn";
-            button5.UseVisualStyleBackColor = true;
+            btnXuatHD.Location = new Point(15, 685);
+            btnXuatHD.Name = "btnXuatHD";
+            btnXuatHD.Size = new Size(393, 61);
+            btnXuatHD.TabIndex = 14;
+            btnXuatHD.Text = "Xuất Hóa Đơn";
+            btnXuatHD.UseVisualStyleBackColor = true;
+            btnXuatHD.Click += btnXuatHD_Click;
             // 
-            // button4
+            // btnThanhToan
             // 
-            button4.Location = new Point(15, 618);
-            button4.Name = "button4";
-            button4.Size = new Size(393, 61);
-            button4.TabIndex = 4;
-            button4.Text = "Thanh Toán";
-            button4.UseVisualStyleBackColor = true;
+            btnThanhToan.Location = new Point(15, 618);
+            btnThanhToan.Name = "btnThanhToan";
+            btnThanhToan.Size = new Size(393, 61);
+            btnThanhToan.TabIndex = 4;
+            btnThanhToan.Text = "Thanh Toán";
+            btnThanhToan.UseVisualStyleBackColor = true;
+            btnThanhToan.Click += btnThanhToan_Click;
             // 
             // txt_tienThua
             // 
@@ -360,8 +362,8 @@
         private Label label4;
         private TextBox txt_user;
         private Label label3;
-        private Button button5;
-        private Button button4;
+        private Button btnXuatHD;
+        private Button btnThanhToan;
         private TextBox txt_tienThua;
         private Label label9;
         private TextBox txt_TienNhan;

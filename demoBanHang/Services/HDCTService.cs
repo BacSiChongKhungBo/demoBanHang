@@ -24,9 +24,9 @@ namespace demoBanHang.Services
         public void Add(Cthd cthd)
         {
             //2 TH: đã có trong cthd
-            if (GetAll().Any(x => x.IdCtsp == cthd.IdCtsp)) 
+            if (GetAll().Any(x => x.IdCtsp == cthd.IdCtsp && x.IdHd == cthd.IdHd)) //3-8-2024
             {
-                var updateCTHD = _repos.GetAllHDCT().First(x=> x.IdCtsp == cthd.IdCtsp);
+                var updateCTHD = _repos.GetAllHDCT().First(x=> x.IdCtsp == cthd.IdCtsp && x.IdHd == cthd.IdHd); //3-8-2024
                 updateCTHD.Soluong++;
                 _repos.UpdateCTHD(updateCTHD);
             }
