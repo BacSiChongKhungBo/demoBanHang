@@ -53,5 +53,17 @@ namespace demoBanHang
             banHang.ShowDialog();
 
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            LichSuGD ls = new LichSuGD() { TopLevel = false, TopMost = true };
+            ls.FormBorderStyle = FormBorderStyle.None;
+            if (pHome.Controls.Count > 0)
+            {
+                pHome.Controls.RemoveAt(0);
+            }
+            pHome.Controls.Add(ls);
+            ls.Show();
+        }
     }
 }

@@ -27,6 +27,27 @@ namespace demoBanHang
             _lstSP = _sService.GetSanPhams().Where(x => x.TrangThai == true).ToList();
             LoadDataSP();
             LoadDataCTSP();
+            //khóa tên SP lại
+            txtTenSP2.Enabled = false;
+            rbtn_CTSP_HD.Checked = true;
+            SettingCheckListBoxHang();
+            SettingCheckListBoxTheTich();
+        }
+
+        private void SettingCheckListBoxTheTich()
+        {
+            foreach (var item in _sService.GetTheTich().Where(x => x.TrangThai == true).ToList())
+            {
+                chlbx_TheTich.Items.Add(item.Thetich1);
+            }
+        }
+
+        private void SettingCheckListBoxHang()
+        {
+            foreach (var item in _sService.GetHang().Where(x => x.TrangThai == true).ToList())
+            {
+                chlbx_Hang.Items.Add(item.TenHang);
+            }
         }
 
         private void LoadDataCTSP()
@@ -49,12 +70,12 @@ namespace demoBanHang
             var lstHang = _sService.GetHang();
             var lstTheTich = _sService.GetTheTich();
             var lstCTSP = _sService.GetCtsp();
-            var lstSP = _sService.GetSanPhams();
+            var lstSP = _sService.GetSanPhams().Where(x => x.Id == _IdWhenClick);
             //join           bảng A       Bảng B
             var dataJoinSP = lstCTSP.Join(lstSP,
-                           ctsp => ctsp.Id, //Key bảng A
+                           ctsp => ctsp.IdSp, //Key bảng A
                            sp => sp.Id, // Key bảng B
-                           
+
                            (ctsp, sp) => new // key A = Key B
                            { //Có thể lấy dữ liệu từ cả 2 bảng
                                ID = ctsp.Id,
@@ -64,7 +85,7 @@ namespace demoBanHang
                                idTheTich = ctsp.IdTheTich,
                                TrangThai = ctsp.TrangThai
                            }).ToList(); //chuyển về list
-            var dataJoinHang = dataJoinSP.Join(lstHang, 
+            var dataJoinHang = dataJoinSP.Join(lstHang,
                                 ctsp => ctsp.idHang,
                                 h => h.Id,
                                 (ctsp, h) => new
@@ -88,12 +109,12 @@ namespace demoBanHang
                                        TheTich = tt.Thetich1,
                                        TrangThai = ctsp.TrangThai
                                    }).ToList();
-            foreach ( var item in dataJoinTheTich)
+            foreach (var item in dataJoinTheTich)
             {
                 dataGridView1.Rows.Add(stt++, item.ID, item.TenSP, item.Gia, item.TenHang, item.TheTich, item.TrangThai == true ? "Đang Hoạt Động" : "Ngừng Bán");
             }
-            
-            
+
+
         }
 
         public void LoadDataSP()
@@ -131,6 +152,7 @@ namespace demoBanHang
             //Trích xuất cột chứa ID
             _IdWhenClick = int.Parse(dtgView_SP.Rows[selectedRow].Cells[1].Value.ToString());
             FillData();
+            LoadDataCTSP();
         }
 
         private void FillData()
@@ -146,7 +168,7 @@ namespace demoBanHang
             {
                 rbtnSP_NgungBan.Checked = true;
             }
-
+            txtTenSP2.Text = data.TenSp;
         }
 
         private void SettingCombobox()
@@ -212,6 +234,127 @@ namespace demoBanHang
             //update list sản phẩm do có 1 sản phẩm mới add vào
             _lstSP = _sService.GetSanPhams().Where(x => x.TrangThai == true).ToList();
             LoadDataSP();
+        }
+
+        private void btn_CTSP_Them_Click(object sender, EventArgs e)
+        {
+
+            //tạo số lượng vòng lặp tương ứng với số biến thể ta có của đối tượng
+            List<string> selectedHangs = new List<string>();
+            List<int> selectedTheTichs = new List<int>();
+            foreach (Object item in chlbx_Hang.CheckedItems)
+            {
+                selectedHangs.Add(item.ToString());
+            }
+            foreach (int item in chlbx_TheTich.CheckedItems)
+            {
+                selectedTheTichs.Add(item);
+            }
+            List<int> selectedHangIds = new List<int>();
+            List<int> selectedTheTichIds = new List<int>();
+            foreach (var item in selectedHangs)
+            {
+                int id = _sService.GetHang().FirstOrDefault(x => x.TenHang.Equals(item)).Id;
+                selectedHangIds.Add(id);
+            }
+            foreach (var item in selectedTheTichs)
+            {
+                int id = _sService.GetTheTich().FirstOrDefault(x => x.Thetich1.Equals(item)).Id;
+                selectedTheTichIds.Add(id);
+            }
+            bool checkSuccess = false; //để check xem có sản phẩm ct nào add thành công vào db ko
+            foreach (var itemH in selectedHangIds)
+            {
+                foreach (int itemTT in selectedTheTichIds)
+                {
+                    Ctsp ctsp = new Ctsp();
+                    ctsp.IdSp = _IdWhenClick;
+                    ctsp.IdHang = itemH;
+                    ctsp.IdTheTich = itemTT;
+                    if (rbtn_CTSP_HD.Checked)
+                    {
+                        ctsp.TrangThai = true;
+                    }
+                    else
+                    {
+                        ctsp.TrangThai = false;
+                    }
+                    if (_sService.ThemCTSP(ctsp).Equals("Thêm Thành Công"))
+                    {
+                        checkSuccess = true;
+                    }
+                }
+            }
+            if (checkSuccess)
+            {
+                MessageBox.Show("Thêm Thành Công");
+            }
+            else
+            {
+                MessageBox.Show("Thêm Thất bại hoặc đã có CTSP tồn tại trong CSDL");
+            }
+            LoadDataCTSP();
+        }
+
+        private void btn_CTSP_CapNhat_Click(object sender, EventArgs e)
+        {
+            //có thể tách thể tích và hãng là 2 hàm trả về list khác nhau
+            List<string> selectedHangs = new List<string>();
+            List<int> selectedTheTichs = new List<int>();
+            foreach (Object item in chlbx_Hang.CheckedItems)
+            {
+                selectedHangs.Add(item.ToString());
+            }
+            foreach (int item in chlbx_TheTich.CheckedItems)
+            {
+                selectedTheTichs.Add(item);
+            }
+            List<int> selectedHangIds = new List<int>();
+            List<int> selectedTheTichIds = new List<int>();
+            foreach (var item in selectedHangs)
+            {
+                int id = _sService.GetHang().FirstOrDefault(x => x.TenHang.Equals(item)).Id;
+                selectedHangIds.Add(id);
+            }
+            foreach (var item in selectedTheTichs)
+            {
+                int id = _sService.GetTheTich().FirstOrDefault(x => x.Thetich1.Equals(item)).Id;
+                selectedTheTichIds.Add(id);
+            }
+            bool checkSuccess = false; //để check xem có sản phẩm ct nào add thành công vào db ko
+            foreach (var itemH in selectedHangIds)
+            {
+                foreach (int itemTT in selectedTheTichIds) 
+                {
+                    var selectedItem = _sService.GetCtsp().FirstOrDefault(x => x.IdSp == _IdWhenClick && x.IdHang == itemH && itemTT == x.IdTheTich);
+                    //Với cập nhật, selected Item có thể trả về null
+                    // => ko xử lý nếu null
+                    if (selectedItem != null)
+                    {
+                        if (rbtn_CTSP_HD.Checked)
+                        {
+                            selectedItem.TrangThai = true;
+                        }
+                        else
+                        {
+                            selectedItem.TrangThai = false;
+                        }
+                        if (_sService.UpdateCTSP(selectedItem).Equals("Cập nhật Thành Công"))
+                        {
+                            checkSuccess = true;
+                        }
+                    }
+                }
+            }
+            if (checkSuccess)
+            {
+                MessageBox.Show("Cập Nhật Thành Công");
+            }
+            else
+            {
+                MessageBox.Show("Cập Nhật Thất Bại");
+            }
+            LoadDataCTSP();
         }
     }
 }

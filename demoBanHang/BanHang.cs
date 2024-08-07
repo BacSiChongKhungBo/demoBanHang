@@ -68,7 +68,7 @@ namespace demoBanHang
             var lstHang = _sService.GetHang();
             var lstTheTich = _sService.GetTheTich();
             var lstCTSP = _sService.GetCtsp();
-            var lstSP = _sService.GetSanPhams();
+            var lstSP = _sService.GetSanPhams().Where(x => x.TrangThai == true).ToList();
             //join           bảng A       Bảng B
             var dataJoinSP = lstCTSP.Join(lstSP,
                            ctsp => ctsp.IdSp, //Key bảng A
@@ -273,7 +273,7 @@ namespace demoBanHang
         {
             //lấy được xem mình ấn vào dòng nào
             int selectedRow = e.RowIndex;
-            if (selectedRow < 0 || selectedRow >= _sService.GetSanPhams().Count)
+            if (selectedRow < 0 || selectedRow >= dtgView_SP.RowCount - 1)
             {
                 return;
             }
@@ -495,19 +495,7 @@ namespace demoBanHang
                     sb.Append("</div>");
                     sb.Append("</div>");
 
-                    //Export HTML String as PDF.
-                    //StringReader sr = new StringReader(sb.ToString());
-                    //Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 10f);
-                    //HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
-                    //PdfWriter pdfwriter = PdfWriter.GetInstance(pdfDoc, HttpResponse.FromValue);
-                    //pdfDoc.Open();
-                    //htmlparser.Parse(sr);
-                    //pdfDoc.Close();
-                    //Response.ContentType = "application/pdf";
-                    //Response.AddHeader("content-disposition", "attachment;filename=Invoice_" + orderNo + ".pdf");
-                    //Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    //Response.Write(pdfDoc);
-                    //Response.End();
+                    MessageBox.Show(sw.ToString());
                 }
             }
         }

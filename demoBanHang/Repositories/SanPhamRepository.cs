@@ -57,6 +57,16 @@ namespace demoBanHang.Repositories
             }
             return false;
         }
+        public bool UpdateCTSPToDB(Ctsp ctsp)
+        {
+            if (ctsp != null)
+            {
+                _context.Ctsps.Update(ctsp);
+                _context.SaveChanges();// ko có thì ko lưu dũ liệu vào db
+                return true;
+            }
+            return false;
+        }
 
 
         public List<Hang> GetAllHang() 

@@ -87,6 +87,7 @@
             button4.TabIndex = 4;
             button4.Text = "Lịch Sử Giao Dịch";
             button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
             // 
             // pHome
             // 
